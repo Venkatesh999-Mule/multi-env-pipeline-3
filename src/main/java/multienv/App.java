@@ -1,0 +1,30 @@
+package com.multienv;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@SpringBootApplication
+@RestController
+public class App {
+
+    public static void main(String[] args) {
+        SpringApplication.run(App.class, args);
+    }
+
+    @GetMapping("/")
+    public String home() {
+        return "Hello from Multi-Environment Pipeline!";
+    }
+
+    @GetMapping("/health")
+    public String health() {
+        return "UP";
+    }
+
+    @GetMapping("/version")
+    public String version() {
+        return "v1.0 - Build: " + System.getenv("BUILD_NUMBER");
+    }
+}
