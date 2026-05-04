@@ -12,4 +12,4 @@ echo "Rolling back Prod..."
 kubectl rollout undo deployment/multi-env-prod -n prod
 kubectl rollout status deployment/multi-env-prod -n prod --timeout=60s
 
-echo "===== Rollback Complete ====="
+echo "===== successfully Rollback Complete ====="
