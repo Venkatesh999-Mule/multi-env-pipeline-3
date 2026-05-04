@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multi-env-prod
+  namespace: prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: multi-env-prod
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: multi-env-prod
+    spec:
+      containers:
+      - name: multi-env-prod
+        image: mulevenkatesh/multi-env-pipeline:IMAGE_TAG
+        ports:
+        - containerPort: 8080
+        env:
+        - name: BUILD_NUMBER
+          value: "IMAGE_TAG"
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
