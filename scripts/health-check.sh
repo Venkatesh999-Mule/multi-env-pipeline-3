@@ -2,18 +2,22 @@
 
 NAMESPACE=$1
 PORT=$2
-MINIKUBE_IP=$(minikube ip)
+
+# Use hardcoded minikube IP instead of minikube ip command
+# Jenkins user cannot run minikube commands
+MINIKUBE_IP="192.168.49.2"
 APP_URL="http://${MINIKUBE_IP}:${PORT}/health"
+
 MAX_RETRIES=5
 RETRY=0
 STATUS=000
 
-echo "===== Health Check - $NAMESPACE environments ====="
+echo "===== Health Check - $NAMESPACE environment ====="
 echo "Checking: $APP_URL"
 
 while [ $RETRY -lt $MAX_RETRIES ]; do
     STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-        --connect-timeout 5 $APP_URL)
+        --connect-timeout 5 "$APP_URL")
 
     if [ "$STATUS" == "200" ]; then
         echo "Health check PASSED - HTTP $STATUS"
@@ -25,15 +29,16 @@ while [ $RETRY -lt $MAX_RETRIES ]; do
     fi
 done
 
-PODS=$(kubectl get pods -n $NAMESPACE \
+# Check pod count
+PODS=$(kubectl get pods -n "$NAMESPACE" \
     --field-selector=status.phase=Running \
-    --no-headers | wc -l)
+    --no-headers 2>/dev/null | wc -l)
 echo "Running pods in $NAMESPACE: $PODS"
 
 if [ "$STATUS" == "200" ] && [ "$PODS" -ge 1 ]; then
     echo "===== $NAMESPACE is HEALTHY ====="
     exit 0
 else
-    echo "===== $NAMESPACE FAILED - triggering rollback ====="
+    echo "===== $NAMESPACE FAILED ====="
     exit 1
 fi
