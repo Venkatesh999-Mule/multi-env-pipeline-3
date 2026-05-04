@@ -8,7 +8,7 @@ MAX_RETRIES=5
 RETRY=0
 STATUS=000
 
-echo "===== Health Check - $NAMESPACE environment ====="
+echo "===== Health Check - $NAMESPACE environments ====="
 echo "Checking: $APP_URL"
 
 while [ $RETRY -lt $MAX_RETRIES ]; do
