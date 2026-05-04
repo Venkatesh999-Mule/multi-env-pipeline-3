@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: multi-env-dev
-        image: mulevenkatesh/multi-env-pipeline:IMAGE_TAG
+        image: mulevenkatesh/multi-env-pipeline
         ports:
         - containerPort: 8080
         env:
